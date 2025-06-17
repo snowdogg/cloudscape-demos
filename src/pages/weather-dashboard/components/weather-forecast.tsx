@@ -83,6 +83,40 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
     return directions[index];
   };
 
+  const getWeatherEmoji = (code: number): string => {
+    const emojiMap: Record<number, string> = {
+      0: '☀️', // Clear sky
+      1: '🌤️', // Mainly clear
+      2: '⛅', // Partly cloudy
+      3: '☁️', // Overcast
+      45: '🌫️', // Fog
+      48: '🌫️', // Depositing rime fog
+      51: '🌦️', // Light drizzle
+      53: '🌦️', // Moderate drizzle
+      55: '🌧️', // Dense drizzle
+      56: '🌨️', // Light freezing drizzle
+      57: '🌨️', // Dense freezing drizzle
+      61: '🌧️', // Slight rain
+      63: '🌧️', // Moderate rain
+      65: '⛈️', // Heavy rain
+      66: '🌨️', // Light freezing rain
+      67: '🌨️', // Heavy freezing rain
+      71: '❄️', // Slight snow fall
+      73: '🌨️', // Moderate snow fall
+      75: '❄️', // Heavy snow fall
+      77: '❄️', // Snow grains
+      80: '🌦️', // Slight rain showers
+      81: '🌧️', // Moderate rain showers
+      82: '⛈️', // Violent rain showers
+      85: '🌨️', // Slight snow showers
+      86: '❄️', // Heavy snow showers
+      95: '⛈️', // Thunderstorm
+      96: '⛈️', // Thunderstorm with slight hail
+      99: '⛈️', // Thunderstorm with heavy hail
+    };
+    return emojiMap[code] || '🌤️';
+  };
+
   return (
     <SpaceBetween size="l">
       {/* Current Weather */}
@@ -160,75 +194,138 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
 
       {/* 7-Day Forecast */}
       <Container header={<Header variant="h2">7-Day Forecast</Header>}>
-        <Cards
-          ariaLabels={{
-            itemSelectionLabel: (e, n) => `Select day ${n.dayName}`,
-            selectionGroupLabel: 'Day selection',
+        <div
+          style={{
+            overflowX: 'auto',
+            paddingBottom: '8px',
+            scrollbarWidth: 'thin',
+            scrollbarColor: '#e0e0e0 transparent',
           }}
-          cardDefinition={{
-            header: item => (
-              <SpaceBetween size="xs">
-                <Box variant="h4">{item.dayName}</Box>
-                <Box variant="small" color="text-label">
-                  {item.date}
-                </Box>
-              </SpaceBetween>
-            ),
-            sections: [
-              {
-                id: 'weather',
-                content: item => (
-                  <SpaceBetween size="s" alignItems="center">
-                    <div style={{ textAlign: 'center' }}>
-                      <Icon name="external" size="large" />
-                      <Box variant="small" color="text-label" display="block" margin={{ top: 'xxs' }}>
-                        {getWeatherDescription(item.weatherCode).description}
-                      </Box>
+        >
+          <div
+            style={{
+              display: 'flex',
+              gap: '16px',
+              minWidth: 'fit-content',
+              paddingRight: '8px',
+            }}
+          >
+            {dailyForecast.map((item, index) => (
+              <div
+                key={item.date}
+                style={{
+                  minWidth: '160px',
+                  maxWidth: '180px',
+                  background: index === 0 ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#ffffff',
+                  borderRadius: '20px',
+                  padding: '20px 16px',
+                  boxShadow: index === 0 ? '0 8px 32px rgba(102, 126, 234, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.08)',
+                  border: index === 0 ? 'none' : '1px solid #f0f0f0',
+                  color: index === 0 ? '#ffffff' : '#333333',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer',
+                  transform: 'translateY(0)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow =
+                    index === 0 ? '0 12px 40px rgba(102, 126, 234, 0.4)' : '0 8px 30px rgba(0, 0, 0, 0.12)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow =
+                    index === 0 ? '0 8px 32px rgba(102, 126, 234, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.08)';
+                }}
+              >
+                <div style={{ textAlign: 'center' }}>
+                  {/* Day and Date */}
+                  <div
+                    style={{
+                      marginBottom: '16px',
+                      opacity: index === 0 ? 1 : 0.9,
+                    }}
+                  >
+                    <Box variant="h4" color={index === 0 ? 'inherit' : 'text-label'}>
+                      {item.dayName}
+                    </Box>
+                    <Box
+                      variant="small"
+                      color={index === 0 ? 'inherit' : 'text-label'}
+                      style={{ opacity: index === 0 ? 0.9 : 0.7 }}
+                    >
+                      {item.date}
+                    </Box>
+                  </div>
+
+                  {/* Weather Icon */}
+                  <div
+                    style={{
+                      fontSize: '48px',
+                      marginBottom: '16px',
+                      lineHeight: '1',
+                    }}
+                  >
+                    {getWeatherEmoji(item.weatherCode)}
+                  </div>
+
+                  {/* Temperature */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <div
+                      style={{
+                        fontSize: '24px',
+                        fontWeight: '700',
+                        lineHeight: '1.2',
+                        marginBottom: '4px',
+                      }}
+                    >
+                      {item.maxTemp}
+                      {getTempUnit()}
                     </div>
-                    <div style={{ textAlign: 'center' }}>
-                      <Box variant="h3">
-                        {item.maxTemp}
-                        {getTempUnit()}
-                      </Box>
-                      <Box variant="small" color="text-label">
-                        {item.minTemp}
-                        {getTempUnit()}
-                      </Box>
+                    <div
+                      style={{
+                        fontSize: '16px',
+                        opacity: index === 0 ? 0.8 : 0.6,
+                        fontWeight: '500',
+                      }}
+                    >
+                      {item.minTemp}
+                      {getTempUnit()}
                     </div>
-                  </SpaceBetween>
-                ),
-              },
-              {
-                id: 'details',
-                content: item => (
-                  <KeyValuePairs
-                    columns={1}
-                    items={[
-                      {
-                        label: 'Precipitation',
-                        value: `${item.precipitation} ${item.precipitationUnit}`,
-                      },
-                      {
-                        label: 'Wind',
-                        value: `${item.windSpeed} ${item.windUnit} ${getWindDirection(item.windDirection)}`,
-                      },
-                    ]}
-                  />
-                ),
-              },
-            ],
-          }}
-          cardsPerRow={[
-            { cards: 1, minWidth: 0 },
-            { cards: 2, minWidth: 500 },
-            { cards: 3, minWidth: 750 },
-            { cards: 4, minWidth: 1000 },
-            { cards: 7, minWidth: 1400 },
-          ]}
-          items={dailyForecast}
-          trackBy="date"
-          visibleSections={['weather', 'details']}
-        />
+                  </div>
+
+                  {/* Weather Description */}
+                  <div
+                    style={{
+                      fontSize: '12px',
+                      opacity: index === 0 ? 0.9 : 0.7,
+                      marginBottom: '12px',
+                      fontWeight: '500',
+                      lineHeight: '1.3',
+                    }}
+                  >
+                    {getWeatherDescription(item.weatherCode).description}
+                  </div>
+
+                  {/* Weather Details */}
+                  <div
+                    style={{
+                      fontSize: '11px',
+                      opacity: index === 0 ? 0.8 : 0.6,
+                      lineHeight: '1.4',
+                    }}
+                  >
+                    <div style={{ marginBottom: '4px' }}>
+                      💧 {item.precipitation} {item.precipitationUnit}
+                    </div>
+                    <div>
+                      💨 {item.windSpeed} {item.windUnit} {getWindDirection(item.windDirection)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </Container>
     </SpaceBetween>
   );
