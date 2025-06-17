@@ -3,7 +3,6 @@
 
 import React, { useState } from 'react';
 import Box from '@cloudscape-design/components/box';
-import Cards from '@cloudscape-design/components/cards';
 import Container from '@cloudscape-design/components/container';
 import Grid from '@cloudscape-design/components/grid';
 import Header from '@cloudscape-design/components/header';
@@ -11,6 +10,8 @@ import Icon from '@cloudscape-design/components/icon';
 import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 import SpaceBetween from '@cloudscape-design/components/space-between';
 import Toggle from '@cloudscape-design/components/toggle';
+
+import styles from './weather-forecast.module.scss';
 
 import { WeatherData, GeocodingResult } from '../types';
 import { getWeatherDescription } from '../services/weather-api';
@@ -194,48 +195,12 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
 
       {/* 7-Day Forecast */}
       <Container header={<Header variant="h2">7-Day Forecast</Header>}>
-        <div
-          style={{
-            overflowX: 'auto',
-            paddingBottom: '8px',
-            scrollbarWidth: 'thin',
-            scrollbarColor: '#e0e0e0 transparent',
-          }}
-        >
-          <div
-            style={{
-              display: 'flex',
-              gap: '16px',
-              minWidth: 'fit-content',
-              paddingRight: '8px',
-            }}
-          >
+        <div className={styles['forecast-scroll-container']}>
+          <div className={styles['forecast-cards-container']}>
             {dailyForecast.map((item, index) => (
               <div
                 key={item.date}
-                style={{
-                  minWidth: '160px',
-                  maxWidth: '180px',
-                  background: index === 0 ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#ffffff',
-                  borderRadius: '20px',
-                  padding: '20px 16px',
-                  boxShadow: index === 0 ? '0 8px 32px rgba(102, 126, 234, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.08)',
-                  border: index === 0 ? 'none' : '1px solid #f0f0f0',
-                  color: index === 0 ? '#ffffff' : '#333333',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer',
-                  transform: 'translateY(0)',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-4px)';
-                  e.currentTarget.style.boxShadow =
-                    index === 0 ? '0 12px 40px rgba(102, 126, 234, 0.4)' : '0 8px 30px rgba(0, 0, 0, 0.12)';
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow =
-                    index === 0 ? '0 8px 32px rgba(102, 126, 234, 0.3)' : '0 4px 20px rgba(0, 0, 0, 0.08)';
-                }}
+                className={`${styles['weather-card']} ${index === 0 ? styles.today : styles['other-day']}`}
               >
                 <div style={{ textAlign: 'center' }}>
                   {/* Day and Date */}
@@ -258,66 +223,31 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                   </div>
 
                   {/* Weather Icon */}
-                  <div
-                    style={{
-                      fontSize: '48px',
-                      marginBottom: '16px',
-                      lineHeight: '1',
-                    }}
-                  >
-                    {getWeatherEmoji(item.weatherCode)}
-                  </div>
+                  <div className={styles['weather-icon']}>{getWeatherEmoji(item.weatherCode)}</div>
 
                   {/* Temperature */}
                   <div style={{ marginBottom: '12px' }}>
-                    <div
-                      style={{
-                        fontSize: '24px',
-                        fontWeight: '700',
-                        lineHeight: '1.2',
-                        marginBottom: '4px',
-                      }}
-                    >
+                    <div className={styles['temperature-main']}>
                       {item.maxTemp}
                       {getTempUnit()}
                     </div>
-                    <div
-                      style={{
-                        fontSize: '16px',
-                        opacity: index === 0 ? 0.8 : 0.6,
-                        fontWeight: '500',
-                      }}
-                    >
+                    <div className={styles['temperature-low']} style={{ opacity: index === 0 ? 0.8 : 0.6 }}>
                       {item.minTemp}
                       {getTempUnit()}
                     </div>
                   </div>
 
                   {/* Weather Description */}
-                  <div
-                    style={{
-                      fontSize: '12px',
-                      opacity: index === 0 ? 0.9 : 0.7,
-                      marginBottom: '12px',
-                      fontWeight: '500',
-                      lineHeight: '1.3',
-                    }}
-                  >
+                  <div className={styles['weather-description']} style={{ opacity: index === 0 ? 0.9 : 0.7 }}>
                     {getWeatherDescription(item.weatherCode).description}
                   </div>
 
                   {/* Weather Details */}
-                  <div
-                    style={{
-                      fontSize: '11px',
-                      opacity: index === 0 ? 0.8 : 0.6,
-                      lineHeight: '1.4',
-                    }}
-                  >
-                    <div style={{ marginBottom: '4px' }}>
+                  <div className={styles['weather-details']} style={{ opacity: index === 0 ? 0.8 : 0.6 }}>
+                    <div className={styles['detail-item']}>
                       💧 {item.precipitation} {item.precipitationUnit}
                     </div>
-                    <div>
+                    <div className={styles['detail-item']}>
                       💨 {item.windSpeed} {item.windUnit} {getWindDirection(item.windDirection)}
                     </div>
                   </div>
