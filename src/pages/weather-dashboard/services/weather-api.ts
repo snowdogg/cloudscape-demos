@@ -62,6 +62,7 @@ export async function getWeatherForecast(latitude: number, longitude: number): P
 }
 
 // Weather code descriptions based on WMO Weather interpretation codes
+// Using available Cloudscape Design System icons
 export const WEATHER_CODES: Record<number, WeatherCodeDescription> = {
   0: { description: 'Clear sky', icon: 'external' },
   1: { description: 'Mainly clear', icon: 'external' },
@@ -79,20 +80,20 @@ export const WEATHER_CODES: Record<number, WeatherCodeDescription> = {
   65: { description: 'Heavy rain', icon: 'refresh' },
   66: { description: 'Light freezing rain', icon: 'refresh' },
   67: { description: 'Heavy freezing rain', icon: 'refresh' },
-  71: { description: 'Slight snow fall', icon: 'send' },
-  73: { description: 'Moderate snow fall', icon: 'send' },
-  75: { description: 'Heavy snow fall', icon: 'send' },
-  77: { description: 'Snow grains', icon: 'send' },
+  71: { description: 'Slight snow fall', icon: 'thumbs-down' },
+  73: { description: 'Moderate snow fall', icon: 'thumbs-down' },
+  75: { description: 'Heavy snow fall', icon: 'thumbs-down' },
+  77: { description: 'Snow grains', icon: 'thumbs-down' },
   80: { description: 'Slight rain showers', icon: 'refresh' },
   81: { description: 'Moderate rain showers', icon: 'refresh' },
   82: { description: 'Violent rain showers', icon: 'refresh' },
-  85: { description: 'Slight snow showers', icon: 'send' },
-  86: { description: 'Heavy snow showers', icon: 'send' },
+  85: { description: 'Slight snow showers', icon: 'thumbs-down' },
+  86: { description: 'Heavy snow showers', icon: 'thumbs-down' },
   95: { description: 'Thunderstorm', icon: 'close' },
   96: { description: 'Thunderstorm with slight hail', icon: 'close' },
   99: { description: 'Thunderstorm with heavy hail', icon: 'close' },
 };
 
 export function getWeatherDescription(code: number): WeatherCodeDescription {
-  return WEATHER_CODES[code] || { description: 'Unknown', icon: 'help' };
+  return WEATHER_CODES[code] || { description: 'Unknown', icon: 'external' };
 }
