@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: MIT-0
 
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@cloudscape-design/components/box';
 import Cards from '@cloudscape-design/components/cards';
 import Container from '@cloudscape-design/components/container';
@@ -10,6 +10,7 @@ import Header from '@cloudscape-design/components/header';
 import Icon from '@cloudscape-design/components/icon';
 import KeyValuePairs from '@cloudscape-design/components/key-value-pairs';
 import SpaceBetween from '@cloudscape-design/components/space-between';
+import Toggle from '@cloudscape-design/components/toggle';
 
 import { WeatherData, GeocodingResult } from '../types';
 import { getWeatherDescription } from '../services/weather-api';
