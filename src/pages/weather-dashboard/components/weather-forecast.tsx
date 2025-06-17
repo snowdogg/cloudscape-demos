@@ -97,7 +97,7 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                 {weatherData.current_units.temperature_2m}
               </Box>
               <SpaceBetween size="xs" direction="horizontal" alignItems="center">
-                <Icon name={getWeatherDescription(weatherData.current.weather_code).icon} size="medium" />
+                <Icon name="external" size="medium" />
                 <Box variant="p" color="text-label">
                   {getWeatherDescription(weatherData.current.weather_code).description}
                 </Box>
@@ -155,7 +155,7 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                 content: item => (
                   <SpaceBetween size="s" alignItems="center">
                     <div style={{ textAlign: 'center' }}>
-                      <Icon name={getWeatherDescription(item.weatherCode).icon} size="large" />
+                      <Icon name="external" size="large" />
                       <Box variant="small" color="text-label" display="block" margin={{ top: 'xxs' }}>
                         {getWeatherDescription(item.weatherCode).description}
                       </Box>
