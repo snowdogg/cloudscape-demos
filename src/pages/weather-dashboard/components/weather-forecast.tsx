@@ -213,11 +213,7 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                     <Box variant="h4" color={index === 0 ? 'inherit' : 'text-label'}>
                       {item.dayName}
                     </Box>
-                    <Box
-                      variant="small"
-                      color={index === 0 ? 'inherit' : 'text-label'}
-                      style={{ opacity: index === 0 ? 0.9 : 0.7 }}
-                    >
+                    <Box variant="small" color="text-label" style={{ opacity: index === 0 ? 0.9 : 0.7 }}>
                       {item.date}
                     </Box>
                   </div>
