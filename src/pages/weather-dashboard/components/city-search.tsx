@@ -66,14 +66,21 @@ export function CitySearch({ onCitySelect, isLoading = false }: CitySearchProps)
   }, []);
 
   const handleSelect = useCallback(
-    (detail: { value: string }) => {
-      const selectedOption = options.find(option => option.value === detail.value);
+    (event: { detail: { value: string } }) => {
+      const selectedOption = options.find(option => option.value === event.detail.value);
       if (selectedOption) {
         setValue(selectedOption.value);
         onCitySelect(selectedOption.city);
       }
     },
     [options, onCitySelect],
+  );
+
+  const handleLoadItemsWrapper = useCallback(
+    (event: { detail: { filteringText: string } }) => {
+      handleLoadItems(event.detail);
+    },
+    [handleLoadItems],
   );
 
   const statusType = status === 'error' ? 'error' : status;
@@ -84,7 +91,7 @@ export function CitySearch({ onCitySelect, isLoading = false }: CitySearchProps)
       <Autosuggest
         onChange={({ detail }) => setValue(detail.value)}
         onSelect={handleSelect}
-        onLoadItems={handleLoadItems}
+        onLoadItems={handleLoadItemsWrapper}
         value={value}
         options={options}
         loadingText="Searching cities..."

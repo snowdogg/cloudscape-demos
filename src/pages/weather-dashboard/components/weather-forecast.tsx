@@ -92,12 +92,12 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
             ]}
           >
             <div style={{ textAlign: 'center' }}>
-              <Box variant="h1" fontSize="display-l" margin="none">
+              <Box variant="h1" fontSize="display-l">
                 {Math.round(weatherData.current.temperature_2m)}
                 {weatherData.current_units.temperature_2m}
               </Box>
               <SpaceBetween size="xs" direction="horizontal" alignItems="center">
-                <Icon name={getWeatherDescription(weatherData.current.weather_code).icon} size="medium" />
+                <Icon name={getWeatherDescription(weatherData.current.weather_code).icon as any} size="medium" />
                 <Box variant="p" color="text-label">
                   {getWeatherDescription(weatherData.current.weather_code).description}
                 </Box>
@@ -155,15 +155,13 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                 content: item => (
                   <SpaceBetween size="s" alignItems="center">
                     <div style={{ textAlign: 'center' }}>
-                      <Icon name={getWeatherDescription(item.weatherCode).icon} size="large" />
+                      <Icon name={getWeatherDescription(item.weatherCode).icon as any} size="large" />
                       <Box variant="small" color="text-label" display="block" margin={{ top: 'xxs' }}>
                         {getWeatherDescription(item.weatherCode).description}
                       </Box>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <Box variant="h3" margin="none">
-                        {item.maxTemp}°
-                      </Box>
+                      <Box variant="h3">{item.maxTemp}°</Box>
                       <Box variant="small" color="text-label">
                         {item.minTemp}°
                       </Box>
