@@ -210,12 +210,23 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                       opacity: index === 0 ? 1 : 0.9,
                     }}
                   >
-                    <Box variant="h4" color={index === 0 ? 'inherit' : 'text-label'}>
+                    <div
+                      style={{
+                        fontSize: '16px',
+                        fontWeight: '600',
+                        marginBottom: '4px',
+                      }}
+                    >
                       {item.dayName}
-                    </Box>
-                    <Box variant="small" color="text-label" style={{ opacity: index === 0 ? 0.9 : 0.7 }}>
+                    </div>
+                    <div
+                      style={{
+                        fontSize: '12px',
+                        opacity: index === 0 ? 0.9 : 0.7,
+                      }}
+                    >
                       {item.date}
-                    </Box>
+                    </div>
                   </div>
 
                   {/* Weather Icon */}
