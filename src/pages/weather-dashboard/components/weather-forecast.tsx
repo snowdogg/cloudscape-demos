@@ -35,14 +35,21 @@ interface DailyForecastItem {
 }
 
 export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastProps) {
+  const [isFahrenheit, setIsFahrenheit] = useState(false);
+
+  // Temperature conversion utilities
+  const celsiusToFahrenheit = (celsius: number): number => Math.round((celsius * 9) / 5 + 32);
+  const convertTemp = (celsius: number): number => (isFahrenheit ? celsiusToFahrenheit(celsius) : Math.round(celsius));
+  const getTempUnit = (): string => (isFahrenheit ? '°F' : '°C');
+
   // Prepare daily forecast data
   const dailyForecast: DailyForecastItem[] = weatherData.daily.time.map((date, index) => {
     const dateObj = new Date(date);
     return {
       date: dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
       dayName: index === 0 ? 'Today' : dateObj.toLocaleDateString('en-US', { weekday: 'short' }),
-      maxTemp: Math.round(weatherData.daily.temperature_2m_max[index]),
-      minTemp: Math.round(weatherData.daily.temperature_2m_min[index]),
+      maxTemp: convertTemp(weatherData.daily.temperature_2m_max[index]),
+      minTemp: convertTemp(weatherData.daily.temperature_2m_min[index]),
       weatherCode: weatherData.daily.weather_code[index],
       precipitation: weatherData.daily.precipitation_sum[index],
       windSpeed: Math.round(weatherData.daily.wind_speed_10m_max[index]),
@@ -79,7 +86,24 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
   return (
     <SpaceBetween size="l">
       {/* Current Weather */}
-      <Container header={<Header variant="h2">Current Weather</Header>}>
+      <Container
+        header={
+          <Header
+            variant="h2"
+            actions={
+              <Toggle
+                onChange={({ detail }) => setIsFahrenheit(detail.checked)}
+                checked={isFahrenheit}
+                description="Switch between Celsius and Fahrenheit"
+              >
+                {isFahrenheit ? 'Fahrenheit' : 'Celsius'}
+              </Toggle>
+            }
+          >
+            Current Weather
+          </Header>
+        }
+      >
         <SpaceBetween size="m">
           <Box variant="h3" color="text-label">
             {selectedCity.name}, {selectedCity.country}
@@ -94,8 +118,8 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
           >
             <div style={{ textAlign: 'center' }}>
               <Box variant="h1" fontSize="display-l">
-                {Math.round(weatherData.current.temperature_2m)}
-                {weatherData.current_units.temperature_2m}
+                {convertTemp(weatherData.current.temperature_2m)}
+                {getTempUnit()}
               </Box>
               <SpaceBetween size="xs" direction="horizontal" alignItems="center">
                 <Icon name="external" size="medium" />
@@ -110,7 +134,7 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
               items={[
                 {
                   label: 'Feels like',
-                  value: `${Math.round(weatherData.current.apparent_temperature)}${weatherData.current_units.apparent_temperature}`,
+                  value: `${convertTemp(weatherData.current.apparent_temperature)}${getTempUnit()}`,
                 },
                 {
                   label: 'Humidity',
@@ -162,9 +186,13 @@ export function WeatherForecast({ weatherData, selectedCity }: WeatherForecastPr
                       </Box>
                     </div>
                     <div style={{ textAlign: 'center' }}>
-                      <Box variant="h3">{item.maxTemp}°</Box>
+                      <Box variant="h3">
+                        {item.maxTemp}
+                        {getTempUnit()}
+                      </Box>
                       <Box variant="small" color="text-label">
-                        {item.minTemp}°
+                        {item.minTemp}
+                        {getTempUnit()}
                       </Box>
                     </div>
                   </SpaceBetween>
