@@ -14,5 +14,5 @@ const root = createRoot(container!);
 root.render(
   <HashRouter>
     <WeatherDashboard />
-  </HashRouter>
+  </HashRouter>,
 );

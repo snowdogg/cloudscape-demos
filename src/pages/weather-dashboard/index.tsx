@@ -44,7 +44,9 @@ interface LocationData {
 }
 
 // Weather code mappings for Open Meteo API
-const weatherCodeMap: { [key: number]: { description: string; icon: string; status: 'success' | 'warning' | 'error' | 'info' } } = {
+const weatherCodeMap: {
+  [key: number]: { description: string; icon: string; status: 'success' | 'warning' | 'error' | 'info' };
+} = {
   0: { description: 'Clear sky', icon: 'status-positive', status: 'success' },
   1: { description: 'Mainly clear', icon: 'status-positive', status: 'success' },
   2: { description: 'Partly cloudy', icon: 'status-info', status: 'info' },
@@ -91,13 +93,13 @@ export default function WeatherDashboard() {
   const fetchWeatherData = async (lat: number, lon: number) => {
     try {
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,wind_speed_10m_max&timezone=auto&forecast_days=7`
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_sum,wind_speed_10m_max&timezone=auto&forecast_days=7`,
       );
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch weather data');
       }
-      
+
       const data = await response.json();
       setWeatherData(data);
     } catch (err) {
@@ -115,15 +117,15 @@ export default function WeatherDashboard() {
     }
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      async position => {
         const { latitude, longitude } = position.coords;
-        
+
         // Reverse geocoding to get city name (using a simple approach)
         try {
           const geoResponse = await fetch(
-            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&timezone=auto`
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&timezone=auto`,
           );
-          
+
           if (geoResponse.ok) {
             setLocation({ latitude, longitude, city: 'Current Location' });
             fetchWeatherData(latitude, longitude);
@@ -138,7 +140,7 @@ export default function WeatherDashboard() {
         const defaultLocation = { latitude: 37.7749, longitude: -122.4194, city: 'San Francisco' };
         setLocation(defaultLocation);
         fetchWeatherData(defaultLocation.latitude, defaultLocation.longitude);
-      }
+      },
     );
   };
 
@@ -230,29 +232,23 @@ export default function WeatherDashboard() {
                     {Math.round(weatherData.current.temperature_2m)}°C
                   </Box>
                 </SpaceBetween>
-                
+
                 <SpaceBetween size="s">
                   <Box variant="awsui-key-label">Conditions</Box>
-                  <StatusIndicator type={currentWeather.status}>
-                    {currentWeather.description}
-                  </StatusIndicator>
+                  <StatusIndicator type={currentWeather.status}>{currentWeather.description}</StatusIndicator>
                 </SpaceBetween>
-                
+
                 <SpaceBetween size="s">
                   <Box variant="awsui-key-label">Humidity</Box>
-                  <Box fontSize="heading-m">
-                    {weatherData.current.relative_humidity_2m}%
-                  </Box>
+                  <Box fontSize="heading-m">{weatherData.current.relative_humidity_2m}%</Box>
                 </SpaceBetween>
-                
+
                 <SpaceBetween size="s">
                   <Box variant="awsui-key-label">Wind Speed</Box>
-                  <Box fontSize="heading-m">
-                    {Math.round(weatherData.current.wind_speed_10m)} km/h
-                  </Box>
+                  <Box fontSize="heading-m">{Math.round(weatherData.current.wind_speed_10m)} km/h</Box>
                 </SpaceBetween>
               </ColumnLayout>
-              
+
               <Box padding={{ top: 'm' }} color="text-body-secondary">
                 Last updated: {formatTime(weatherData.current.time)}
               </Box>
@@ -274,44 +270,42 @@ export default function WeatherDashboard() {
                 {weatherData.daily.time.map((date, index) => {
                   const dayWeather = getWeatherInfo(weatherData.daily.weather_code[index]);
                   const isToday = index === 0;
-                  
+
                   return (
                     <Container key={date}>
                       <SpaceBetween size="s">
                         <Box variant="awsui-key-label" textAlign="center">
                           {isToday ? 'Today' : formatDate(date)}
                         </Box>
-                        
+
                         <Box textAlign="center">
-                          <StatusIndicator type={dayWeather.status}>
-                            {dayWeather.description}
-                          </StatusIndicator>
+                          <StatusIndicator type={dayWeather.status}>{dayWeather.description}</StatusIndicator>
                         </Box>
-                        
+
                         <ColumnLayout columns={2} variant="text-grid">
                           <SpaceBetween size="xs">
-                            <Box variant="small" color="text-body-secondary">High</Box>
+                            <Box variant="small" color="text-body-secondary">
+                              High
+                            </Box>
                             <Box fontSize="heading-s" fontWeight="bold">
                               {Math.round(weatherData.daily.temperature_2m_max[index])}°
                             </Box>
                           </SpaceBetween>
-                          
+
                           <SpaceBetween size="xs">
-                            <Box variant="small" color="text-body-secondary">Low</Box>
-                            <Box fontSize="heading-s">
-                              {Math.round(weatherData.daily.temperature_2m_min[index])}°
+                            <Box variant="small" color="text-body-secondary">
+                              Low
                             </Box>
+                            <Box fontSize="heading-s">{Math.round(weatherData.daily.temperature_2m_min[index])}°</Box>
                           </SpaceBetween>
                         </ColumnLayout>
-                        
+
                         {weatherData.daily.precipitation_sum[index] > 0 && (
                           <Box textAlign="center">
-                            <Badge color="blue">
-                              {weatherData.daily.precipitation_sum[index]}mm rain
-                            </Badge>
+                            <Badge color="blue">{weatherData.daily.precipitation_sum[index]}mm rain</Badge>
                           </Box>
                         )}
-                        
+
                         <Box textAlign="center" variant="small" color="text-body-secondary">
                           Wind: {Math.round(weatherData.daily.wind_speed_10m_max[index])} km/h
                         </Box>
@@ -332,18 +326,18 @@ export default function WeatherDashboard() {
                     {location.longitude < 0 ? 'W' : 'E'}
                   </Box>
                 </SpaceBetween>
-                
+
                 <SpaceBetween size="s">
                   <Box variant="awsui-key-label">Wind Direction</Box>
                   <Box>{weatherData.current.wind_direction_10m}°</Box>
                 </SpaceBetween>
-                
+
                 <SpaceBetween size="s">
                   <Box variant="awsui-key-label">Data Source</Box>
                   <Box>
-                    <Button 
-                      variant="link" 
-                      iconName="external" 
+                    <Button
+                      variant="link"
+                      iconName="external"
                       iconAlign="right"
                       href="https://open-meteo.com/"
                       target="_blank"
