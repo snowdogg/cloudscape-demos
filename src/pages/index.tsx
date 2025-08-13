@@ -186,7 +186,7 @@ export default function Home() {
         >
           <SpaceBetween size="l">
             <Container>
-              <Box variant="h2">Demo catalog</Box>
+              <Box variant="h2">Demo Catalog</Box>
               <Box variant="p" padding={{ bottom: 'm' }}>
                 Browse {demos.length} examples of Cloudscape Design System patterns and components. Each demo shows best
                 practices for cloud application experiences.
