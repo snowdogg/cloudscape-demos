@@ -10,13 +10,14 @@ import Grid from '@cloudscape-design/components/grid';
 import Box from '@cloudscape-design/components/box';
 import Autosuggest, { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import SegmentedControl from '@cloudscape-design/components/segmented-control';
-import Cards from '@cloudscape-design/components/cards';
+import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Badge from '@cloudscape-design/components/badge';
 import Alert from '@cloudscape-design/components/alert';
 import Spinner from '@cloudscape-design/components/spinner';
 import Link from '@cloudscape-design/components/link';
 
 import '../../styles/base.scss';
+import styles from './styles.module.scss';
 
 interface CityOption {
   name: string;
@@ -247,45 +248,35 @@ export default function WeatherDashboard() {
             )}
 
             {forecast && forecast.length > 0 && (
-              <Cards
-                cardDefinition={{
-                  header: item => (
-                    <SpaceBetween size="xs" direction="horizontal">
-                      <span>{dayOfWeek(item.date)}</span>
-                      <span>{new Date(item.date).toLocaleDateString()}</span>
-                    </SpaceBetween>
-                  ),
-                  sections: [
-                    {
-                      id: 'emoji',
-                      content: item => (
-                        <Box fontSize="display-l" textAlign="center">
-                          {getEmojiForWeatherCode(item.code)}
-                        </Box>
-                      ),
-                    },
-                    {
-                      id: 'temps',
-                      content: item => (
-                        <Box textAlign="center">
-                          <strong>
-                            {Math.round(item.max)}° / {Math.round(item.min)}° {unit === 'celsius' ? 'C' : 'F'}
-                          </strong>
-                        </Box>
-                      ),
-                    },
-                  ],
-                }}
-                cardsPerRow={[
-                  { cards: 1, minWidth: 0 },
-                  { cards: 2, minWidth: 400 },
-                  { cards: 3, minWidth: 700 },
-                  { cards: 4, minWidth: 1000 },
-                ]}
-                items={forecast}
-                trackBy="date"
-                header={<Header>7-day forecast</Header>}
-              />
+              <Container header={<Header>7-day forecast</Header>}>
+                <div className={styles['forecast-scroll-container']}>
+                  <div className={styles['forecast-row']}>
+                    {forecast.map(day => (
+                      <Container
+                        key={day.date}
+                        className={styles['forecast-day-card']}
+                        header={
+                          <SpaceBetween size="xs" direction="horizontal">
+                            <span>{dayOfWeek(day.date)}</span>
+                            <span>{new Date(day.date).toLocaleDateString()}</span>
+                          </SpaceBetween>
+                        }
+                      >
+                        <SpaceBetween size="s">
+                          <Box fontSize="display-l" textAlign="center">
+                            {getEmojiForWeatherCode(day.code)}
+                          </Box>
+                          <Box textAlign="center">
+                            <strong>
+                              {Math.round(day.max)}° / {Math.round(day.min)}° {unit === 'celsius' ? 'C' : 'F'}
+                            </strong>
+                          </Box>
+                        </SpaceBetween>
+                      </Container>
+                    ))}
+                  </div>
+                </div>
+              </Container>
             )}
           </SpaceBetween>
         </ContentLayout>
