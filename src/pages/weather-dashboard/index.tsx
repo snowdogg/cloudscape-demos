@@ -283,7 +283,7 @@ export default function WeatherDashboard() {
                   { cards: 4, minWidth: 1000 },
                 ]}
                 items={forecast}
-                trackBy={d => d.date}
+                trackBy="date"
                 header={<Header>7-day forecast</Header>}
               />
             )}
