@@ -123,36 +123,33 @@ export default function WeatherDashboard() {
     }
   }, []);
 
-  const fetchForecast = useCallback(
-    async (city: CityOption, u: Unit) => {
-      setError(null);
-      setLoadingForecast(true);
-      setForecast(null);
-      try {
-        const url = new URL('https://api.open-meteo.com/v1/forecast');
-        url.searchParams.set('latitude', String(city.latitude));
-        url.searchParams.set('longitude', String(city.longitude));
-        url.searchParams.set('daily', 'weather_code,temperature_2m_max,temperature_2m_min');
-        url.searchParams.set('temperature_unit', u);
-        url.searchParams.set('timezone', 'auto');
-        const res = await fetch(url.toString());
-        if (!res.ok) throw new Error(`Forecast error: ${res.status}`);
-        const data = await res.json();
-        const days: ForecastDay[] = (data?.daily?.time || []).map((date: string, i: number) => ({
-          date,
-          max: data.daily.temperature_2m_max?.[i],
-          min: data.daily.temperature_2m_min?.[i],
-          code: data.daily.weather_code?.[i],
-        }));
-        setForecast(days.slice(0, 7));
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load forecast');
-      } finally {
-        setLoadingForecast(false);
-      }
-    },
-    [],
-  );
+  const fetchForecast = useCallback(async (city: CityOption, u: Unit) => {
+    setError(null);
+    setLoadingForecast(true);
+    setForecast(null);
+    try {
+      const url = new URL('https://api.open-meteo.com/v1/forecast');
+      url.searchParams.set('latitude', String(city.latitude));
+      url.searchParams.set('longitude', String(city.longitude));
+      url.searchParams.set('daily', 'weather_code,temperature_2m_max,temperature_2m_min');
+      url.searchParams.set('temperature_unit', u);
+      url.searchParams.set('timezone', 'auto');
+      const res = await fetch(url.toString());
+      if (!res.ok) throw new Error(`Forecast error: ${res.status}`);
+      const data = await res.json();
+      const days: ForecastDay[] = (data?.daily?.time || []).map((date: string, i: number) => ({
+        date,
+        max: data.daily.temperature_2m_max?.[i],
+        min: data.daily.temperature_2m_min?.[i],
+        code: data.daily.weather_code?.[i],
+      }));
+      setForecast(days.slice(0, 7));
+    } catch (e: any) {
+      setError(e?.message || 'Failed to load forecast');
+    } finally {
+      setLoadingForecast(false);
+    }
+  }, []);
 
   // When unit changes, refetch for current city
   useEffect(() => {
@@ -177,7 +174,12 @@ export default function WeatherDashboard() {
               </Header>
               <Container>
                 <SpaceBetween size="m">
-                  <Grid gridDefinition={[{ colspan: { default: 12, m: 7, l: 8 } }, { colspan: { default: 12, m: 5, l: 4 } }]}>
+                  <Grid
+                    gridDefinition={[
+                      { colspan: { default: 12, m: 7, l: 8 } },
+                      { colspan: { default: 12, m: 5, l: 4 } },
+                    ]}
+                  >
                     <div>
                       <Autosuggest
                         value={query}
@@ -232,8 +234,12 @@ export default function WeatherDashboard() {
             {!selectedCity && (
               <Container>
                 <Box variant="p">
-                  Start by searching for a city above to see a 7-day forecast powered by Open-Meteo. Learn more about the
-                  API at <Link external href="https://open-meteo.com/">open-meteo.com</Link>.
+                  Start by searching for a city above to see a 7-day forecast powered by Open-Meteo. Learn more about
+                  the API at{' '}
+                  <Link external href="https://open-meteo.com/">
+                    open-meteo.com
+                  </Link>
+                  .
                 </Box>
               </Container>
             )}
