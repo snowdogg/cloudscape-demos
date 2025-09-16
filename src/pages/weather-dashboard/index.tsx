@@ -10,7 +10,6 @@ import Grid from '@cloudscape-design/components/grid';
 import Box from '@cloudscape-design/components/box';
 import Autosuggest, { AutosuggestProps } from '@cloudscape-design/components/autosuggest';
 import SegmentedControl from '@cloudscape-design/components/segmented-control';
-import ColumnLayout from '@cloudscape-design/components/column-layout';
 import Badge from '@cloudscape-design/components/badge';
 import Alert from '@cloudscape-design/components/alert';
 import Spinner from '@cloudscape-design/components/spinner';
