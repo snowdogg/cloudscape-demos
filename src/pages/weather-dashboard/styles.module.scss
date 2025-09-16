@@ -1,0 +1,16 @@
+.forecast-scroll-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.forecast-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  min-width: max-content;
+}
+
+.forecast-day-card {
+  flex: 0 0 220px;
+}
