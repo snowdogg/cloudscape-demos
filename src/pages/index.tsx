@@ -166,7 +166,7 @@ export default function Home() {
                   </Button>
                 }
               >
-                Cloudscape Design System Demos
+                cool demo catalog
               </Header>
 
               <Flashbar
