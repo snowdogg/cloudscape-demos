@@ -166,7 +166,7 @@ export default function Home() {
                   </Button>
                 }
               >
-                cool demo catalog
+                not so cool demo catalog
               </Header>
 
               <Flashbar
