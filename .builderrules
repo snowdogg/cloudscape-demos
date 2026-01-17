@@ -1,1 +1,3 @@
 When adding new pages make sure to link to them from the homepage in src/pages/index.tsx
+
+always let me know which files have been changed updated or deleted at the end of each code generation

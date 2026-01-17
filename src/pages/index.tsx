@@ -31,6 +31,12 @@ const demos = [
   },
   { route: '/dashboard', title: 'Service Dashboard', description: 'Dashboard layout demo.', category: 'Dashboards' },
   {
+    route: '/weather-dashboard',
+    title: 'Weather Forecast Dashboard',
+    description: '7-day city forecast with emojis and °C/°F toggle.',
+    category: 'Dashboards',
+  },
+  {
     route: '/delete-one-click',
     title: 'One-click Delete',
     description: 'Delete with a single click.',
