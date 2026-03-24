@@ -140,5 +140,6 @@ const styles = {
     fontWeight: 'bold',
     color: '#333',
     marginTop: '4px',
+    fontFamily: 'Courier New, monospace',
   },
 };
