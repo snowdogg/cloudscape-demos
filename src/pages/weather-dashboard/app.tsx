@@ -10,6 +10,7 @@ import Box from '@cloudscape-design/components/box';
 import Button from '@cloudscape-design/components/button';
 import Spinner from '@cloudscape-design/components/spinner';
 import Alert from '@cloudscape-design/components/alert';
+import Toggle from '@cloudscape-design/components/toggle';
 
 import { CustomAppLayout } from '../commons/common-components';
 import { Breadcrumbs, Navigation, Notifications } from '../commons/common-components';
@@ -41,6 +42,7 @@ export function App() {
   const [forecastLoading, setForecastLoading] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isCelsius, setIsCelsius] = useState(false);
 
   // Search for location suggestions
   const handleLocationSearch = async (value: string) => {
@@ -74,28 +76,39 @@ export function App() {
     }
   };
 
-  // Select a location and fetch weather
-  const handleSelectLocation = async (location: LocationSuggestion) => {
-    setSelectedLocation(location);
-    setLocationInput(`${location.name}${location.admin1 ? ', ' + location.admin1 : ''}${location.country ? ', ' + location.country : ''}`);
-    setShowSuggestions(false);
-    setSuggestions([]);
-    setError(null);
-
-    // Fetch weather data
+  // Fetch weather data for a location with the selected temperature unit
+  const fetchWeatherData = async (location: LocationSuggestion, celsius: boolean) => {
     setForecastLoading(true);
     try {
+      const tempUnit = celsius ? 'celsius' : 'fahrenheit';
       const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&timezone=auto`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=${tempUnit}&timezone=auto`,
       );
       const data = await response.json();
       setWeatherData(data);
+      setError(null);
     } catch (err) {
       setError('Failed to fetch weather forecast');
       setWeatherData(null);
     } finally {
       setForecastLoading(false);
     }
+  };
+
+  // Refetch weather when temperature unit changes
+  useEffect(() => {
+    if (selectedLocation) {
+      fetchWeatherData(selectedLocation, isCelsius);
+    }
+  }, [isCelsius]);
+
+  // Select a location and fetch weather
+  const handleSelectLocation = async (location: LocationSuggestion) => {
+    setSelectedLocation(location);
+    setLocationInput(`${location.name}${location.admin1 ? ', ' + location.admin1 : ''}${location.country ? ', ' + location.country : ''}`);
+    setShowSuggestions(false);
+    setSuggestions([]);
+    fetchWeatherData(location, isCelsius);
   };
 
   const locationDisplay = selectedLocation
@@ -157,8 +170,17 @@ export function App() {
 
             {selectedLocation && weatherData && !forecastLoading && (
               <SpaceBetween size="m">
-                <Header variant="h2">{locationDisplay}</Header>
-                <ForecastGrid weatherData={weatherData} />
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                  <Header variant="h2">{locationDisplay}</Header>
+                  <Toggle
+                    onChange={({ detail }) => setIsCelsius(detail.checked)}
+                    checked={isCelsius}
+                    ariaLabel="Toggle between Celsius and Fahrenheit"
+                  >
+                    °{isCelsius ? 'C' : 'F'}
+                  </Toggle>
+                </Box>
+                <ForecastGrid weatherData={weatherData} isCelsius={isCelsius} />
               </SpaceBetween>
             )}
 

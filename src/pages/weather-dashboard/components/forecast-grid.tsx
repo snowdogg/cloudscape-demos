@@ -48,7 +48,7 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
-export function ForecastGrid({ weatherData }: { weatherData: WeatherData }) {
+export function ForecastGrid({ weatherData, isCelsius }: { weatherData: WeatherData; isCelsius: boolean }) {
   const { time, weather_code, temperature_2m_max, temperature_2m_min } = weatherData.daily;
 
   // Take only first 7 days
@@ -65,6 +65,8 @@ export function ForecastGrid({ weatherData }: { weatherData: WeatherData }) {
     };
   });
 
+  const tempUnit = isCelsius ? '°C' : '°F';
+
   return (
     <Grid gridDefinition={[{ colspan: { default: 12, s: 6, m: 4, l: 3, xl: 2 } }]}>
       {days.map(day => (
@@ -79,11 +81,11 @@ export function ForecastGrid({ weatherData }: { weatherData: WeatherData }) {
             <div style={styles.temperatures}>
               <div style={styles.temp}>
                 <span style={styles.tempLabel}>High</span>
-                <span style={styles.tempValue}>{day.maxTemp}°</span>
+                <span style={styles.tempValue}>{day.maxTemp}{tempUnit}</span>
               </div>
               <div style={styles.temp}>
                 <span style={styles.tempLabel}>Low</span>
-                <span style={styles.tempValue}>{day.minTemp}°</span>
+                <span style={styles.tempValue}>{day.minTemp}{tempUnit}</span>
               </div>
             </div>
           </Box>
