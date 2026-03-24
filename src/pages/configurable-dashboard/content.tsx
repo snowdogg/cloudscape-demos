@@ -25,23 +25,27 @@ interface ContentProps {
 
 export function Content({ layout, setLayout, resetLayout, setSplitPanelOpen }: ContentProps) {
   const [width, ref] = useContainerQuery(entry => entry.contentBoxWidth);
-  const itemsChanged = useRef(layout !== null);
+  const layoutInitialized = useRef(layout !== null);
 
   useEffect(() => {
-    if (itemsChanged.current || !width) {
+    if (layoutInitialized.current || !width) {
       return;
     }
+    layoutInitialized.current = true;
     resetLayout(getDefaultLayout(width));
   }, [resetLayout, width]);
 
   function handleLayoutChange(layout: ReadonlyArray<StoredWidgetPlacement>) {
-    itemsChanged.current = true;
+    layoutInitialized.current = true;
     setLayout(layout);
   }
 
   function handleResetLayout() {
-    itemsChanged.current = false;
-    resetLayout(getDefaultLayout(width!));
+    if (!width) {
+      return;
+    }
+    layoutInitialized.current = true;
+    resetLayout(getDefaultLayout(width));
   }
 
   return (
